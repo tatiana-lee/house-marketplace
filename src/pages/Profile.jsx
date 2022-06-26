@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { getAuth, updateProfile } from 'firebase/auth'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '../firebase.config'
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
+import arrowRight from '../assets/svg/keyboardArrowRightIcon.svg'
+import homeIcon from '../assets/svg/homeIcon.svg'
 
 function Profile() {
 	const auth = getAuth()
@@ -24,20 +26,20 @@ function Profile() {
 	const onSubmit = async () => {
 		try {
 			if (auth.currentUser.displayName !== name) {
-        // update display name in fb
+				// update display name in fb
 				await updateProfile(auth.currentUser, {
 					displayName: name,
 				})
 
-        // update in firestore
-        const userRef = doc(db, 'users', auth.currentUser.uid)
-        await updateDoc(userRef, {
-          name
-        })
+				// update in firestore
+				const userRef = doc(db, 'users', auth.currentUser.uid)
+				await updateDoc(userRef, {
+					name,
+				})
 			}
 		} catch (error) {
-      toast.error('Could not update profile details')
-    }
+			toast.error('Could not update profile details')
+		}
 	}
 
 	const onChange = (e) => {
@@ -90,6 +92,12 @@ function Profile() {
 						/>
 					</form>
 				</div>
+
+				<Link to='/create-listing' className='createListing'>
+					<img src={homeIcon} alt='home' />
+					<p>Sell or rent your home</p>
+					<img src={arrowRight} alt='arrow right' />
+				</Link>
 			</main>
 		</div>
 	)
